@@ -1,0 +1,27 @@
+
+# Wordpress
+readme.html
+LICENSE.md
+license.txt
+wp-*
+index.php
+xmlrpc.php
+
+# ignore node dependency directories
+node_modules/
+
+# ignore log files and databases
+*.log
+*.sql
+*.sqlite
+
+# End of https://www.toptal.com/developers/gitignore/api/wordpress
+
+# Composer
+/vendor
+
+# Dev Tools
+.devcontainer/dbdata
+
+#Configs
+php.ini

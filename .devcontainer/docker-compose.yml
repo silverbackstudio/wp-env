@@ -1,0 +1,59 @@
+version: "3.7"
+services:
+
+  devenv:
+    build:
+      context: './devenv/'
+    volumes:
+      - "..:/home/developer/workspace/"      
+      - "~/.composer:/home/developer/.composer:cached"
+      - "~/.npm:/home/developer/.npm:cached"      
+      - "~/.gitconfig:/home/developer/.gitconfig:ro"
+      - "~/.gitignore:/home/developer/.gitignore:ro" 
+      - "~/.gitcookies:/home/developer/.gitcookies:ro"      
+      - "~/.config/gcloud:/home/developer/.config/gcloud"
+      - "~/.ssh:/home/developer/.ssh:ro"
+
+  wordpress:
+    image: wordpress
+    depends_on:
+      - db    
+    ports:
+      - 80:80
+      - 433:433
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD_FILE: /run/secrets/db_password
+      WORDPRESS_DB_NAME: wordpress
+    secrets:
+      - db_password           
+    volumes:
+      - ..:/var/www/html    
+
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD_FILE: /run/secrets/db_password
+    volumes:
+      - "./dbdata:/var/lib/mysql:delegated"
+      - "./dbinit:/docker-entrypoint-initdb.d"
+    secrets:
+      - db_root_password
+      - db_password                
+
+secrets:
+  db_password:
+    file: db_password.txt
+  db_root_password:
+    file: db_root_password.txt  
+
+
+
+
+
+     
+     
